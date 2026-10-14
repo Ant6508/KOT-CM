@@ -1,4 +1,4 @@
-# KOT_CM — creative mode for King of Thieves
+# KOT-CM — creative mode for King of Thieves
 
 Build **King of Thieves** bases on your PC, place and edit traps as you like,
 then load them into the game's own editor to play them in **Try** mode.
@@ -82,22 +82,22 @@ terminal.
 
 Either:
 
-- **Without Git**: on <https://github.com/Ant6508/KOT_CM>, green **Code**
+- **Without Git**: on <https://github.com/Ant6508/KOT-CM>, green **Code**
   button → **Download ZIP**. Right-click the downloaded file → *Extract
-  All…*. The ZIP contains a `KOT_CM-main` folder: that's the project folder.
-  Put it wherever you like, for example `C:\KOT_CM` (if *Extract All* made
-  `KOT_CM-main\KOT_CM-main`, take the inner folder).
+  All…*. The ZIP contains a `KOT-CM-main` folder: that's the project folder.
+  Put it wherever you like, for example `C:\KOT-CM` (if *Extract All* made
+  `KOT-CM-main\KOT-CM-main`, take the inner folder).
 - **With Git** (<https://git-scm.com/download/win>), handier to get updates:
 
   ```
-  git clone https://github.com/Ant6508/KOT_CM C:\KOT_CM
+  git clone https://github.com/Ant6508/KOT-CM C:\KOT-CM
   ```
 
 All the following commands are typed in a terminal opened **in the project
 folder**:
 
 ```
-cd C:\KOT_CM
+cd C:\KOT-CM
 ```
 
 **Check:** `dir` lists, among others, `kotcm`, `tests` and `pyproject.toml`.

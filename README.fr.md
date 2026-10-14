@@ -1,4 +1,4 @@
-# KOT_CM — mode créatif pour King of Thieves
+# KOT-CM — mode créatif pour King of Thieves
 
 Construis des bases de **King of Thieves** sur ton PC, pose et règle les
 pièges à ton gré, puis charge-les dans l'éditeur du jeu pour les jouer en
@@ -87,24 +87,24 @@ valide. Ouvre ensuite un nouveau terminal.
 
 Au choix :
 
-- **Sans Git** : sur <https://github.com/Ant6508/KOT_CM>, bouton vert
+- **Sans Git** : sur <https://github.com/Ant6508/KOT-CM>, bouton vert
   **Code** → **Download ZIP**. Clic droit sur le fichier téléchargé →
-  *Extraire tout…*. Le ZIP contient un dossier `KOT_CM-main` : c'est le
-  dossier du projet. Place-le où tu veux, par exemple `C:\KOT_CM` (si
-  *Extraire tout* a créé `KOT_CM-main\KOT_CM-main`, prends le dossier
+  *Extraire tout…*. Le ZIP contient un dossier `KOT-CM-main` : c'est le
+  dossier du projet. Place-le où tu veux, par exemple `C:\KOT-CM` (si
+  *Extraire tout* a créé `KOT-CM-main\KOT-CM-main`, prends le dossier
   intérieur).
 - **Avec Git** (<https://git-scm.com/download/win>), plus pratique pour les
   mises à jour :
 
   ```
-  git clone https://github.com/Ant6508/KOT_CM C:\KOT_CM
+  git clone https://github.com/Ant6508/KOT-CM C:\KOT-CM
   ```
 
 Toutes les commandes suivantes se tapent dans un terminal ouvert **dans le
 dossier du projet** :
 
 ```
-cd C:\KOT_CM
+cd C:\KOT-CM
 ```
 
 **Vérification :** `dir` liste, entre autres, `kotcm`, `tests` et
