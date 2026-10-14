@@ -1,0 +1,417 @@
+{
+ "source": "1616 donjons captures (kot_headless/captures)",
+ "donjon": {
+  "f2": 0,
+  "f3": 2,
+  "f4": 5,
+  "f6": 1,
+  "f7": false
+ },
+ "defaut_piege": {
+  "f6": 1,
+  "f7": false,
+  "f9": 0,
+  "orientation": 0,
+  "vx": 180,
+  "vy": 0,
+  "f13": 0,
+  "f14": 0,
+  "f15": true,
+  "f16": 1
+ },
+ "types": {
+  "1": {
+   "compte": 1452,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": false,
+    "f16": 1
+   },
+   "aimant": [
+    0,
+    50
+   ]
+  },
+  "2": {
+   "compte": 1452,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": false,
+    "f16": 1
+   },
+   "aimant": [
+    0,
+    35
+   ]
+  },
+  "4": {
+   "compte": 383,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "6": {
+   "compte": 42,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "7": {
+   "compte": 17,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": false,
+    "f16": 1
+   },
+   "aimant": [
+    0,
+    0
+   ]
+  },
+  "8": {
+   "compte": 358,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "9": {
+   "compte": 389,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 0,
+    "vy": -256,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "10": {
+   "compte": 1357,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 192,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "11": {
+   "compte": 30,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": false,
+    "f16": 1
+   },
+   "aimant": [
+    0,
+    0
+   ]
+  },
+  "12": {
+   "compte": 4,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": false,
+    "f16": 1
+   },
+   "aimant": [
+    0,
+    0
+   ]
+  },
+  "14": {
+   "compte": 68,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "17": {
+   "compte": 1393,
+   "champs": {
+    "f6": 0,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": false,
+    "f16": null
+   },
+   "aimant": null
+  },
+  "18": {
+   "compte": 4128,
+   "champs": {
+    "f6": 0,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": false,
+    "f16": 1
+   },
+   "aimant": null
+  },
+  "21": {
+   "compte": 1303,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 225,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "39": {
+   "compte": 22,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "40": {
+   "compte": 1,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 192,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "42": {
+   "compte": 15,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 1,
+    "vx": 0,
+    "vy": -64,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "44": {
+   "compte": 368,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 2,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "46": {
+   "compte": 18,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 2,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  },
+  "47": {
+   "compte": 12,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    0,
+    0
+   ]
+  },
+  "48": {
+   "compte": 10,
+   "champs": {
+    "f6": 1,
+    "f7": false,
+    "f9": 0,
+    "orientation": 0,
+    "vx": 180,
+    "vy": 0,
+    "f13": 0,
+    "f14": 0,
+    "f15": true,
+    "f16": 1
+   },
+   "aimant": [
+    32,
+    32
+   ]
+  }
+ }
+}

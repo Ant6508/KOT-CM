@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kotcm"
+version = "0.1.0"
+description = "Creative mode for King of Thieves: base shapes, editable traps, loading into the game's editor"
+requires-python = ">=3.10"
+# The offline editor only needs Python (tkinter included).
+dependencies = []
+
+[project.optional-dependencies]
+# Pinned: frida must be exactly the version of the frida-server kotcm pushes
+# to the device (kotcm/live/appareil.py, FRIDA).
+live = ["frida==17.19.0"]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools]
+packages = ["kotcm", "kotcm.live"]
+
+[tool.setuptools.package-data]
+kotcm = ["*.json"]
+"kotcm.live" = ["*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
