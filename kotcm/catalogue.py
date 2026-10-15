@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 PORTE, TOTEM = 1, 2
 GEMMES = (17, 18)
+GARDES = (9, 10)                # garde rouge, garde bleu : ont un rayon reglable (poignee jaune)
 
 
 @dataclass(frozen=True)

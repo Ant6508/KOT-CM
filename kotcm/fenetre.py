@@ -13,17 +13,19 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-from kotcm.catalogue import GEMMES, PORTE, TOTEM, TYPES, posables, type_de
+from kotcm.catalogue import GARDES, GEMMES, PORTE, TOTEM, TYPES, posables, type_de
 from kotcm.edition import Edition, ErreurLecture
 from kotcm.live import ErreurLive
 from kotcm.protobuf import HAUTEUR, LARGEUR
-from kotcm.regles import base_2x2, zone_porte, zone_totem
+from kotcm.regles import GARDE_BLEU, RAYONS_GARDE_BLEU, base_2x2, zone_porte, zone_totem
 from kotcm.textes import LANGUES, PREFERENCES, Traducteur, sauver_langue
 
 ECHELLE = 0.8               # pixels ecran par pixel du donjon
 MARGE = 16                  # epaisseur des murs dessines
 RAYON = 11                  # rayon d'une pastille, en pixels ecran
+RAYON_POIGNEE = 6           # rayon de la poignee jaune du garde, en pixels ecran
 CARREAU = 64
+PAS_RAYON = 32              # aimantation du rayon d'un garde hors garde bleu (1 en placement libre)
 LARGEUR_PX, HAUTEUR_PX = 896, 512
 CHAMPS_FICHE = ("x", "y", "orientation", "vx", "vy")
 CHAMPS_BRUTS = ("f6", "f7", "f9", "f13", "f14", "f15", "f16")    # sens inconnu : noms bruts
@@ -40,6 +42,31 @@ def vers_donjon(xe: float, ye: float) -> tuple[int, int]:
     return round((xe - MARGE) / ECHELLE), round((ye - MARGE) / ECHELLE)
 
 
+def vecteur_rayon(vx: int | None, vy: int | None, dx: float, dy: float, pas: int = 1) -> tuple[int, int]:
+    """Nouveau (vx, vy) d'un garde quand la poignee est tiree en (dx, dy) du garde (pixels du donjon).
+
+    La poignee reste sur l'axe du vecteur actuel (horizontal si le vecteur est nul) ; seule sa
+    longueur change, au moins 1, et le sens est conserve.
+    """
+    vx, vy = vx or 0, vy or 0
+    norme = (vx * vx + vy * vy) ** 0.5
+    ux, uy = (vx / norme, vy / norme) if norme else (1.0, 0.0)
+    longueur = max(pas, pas * round((dx * ux + dy * uy) / pas))
+    return round(ux * longueur), round(uy * longueur)
+
+
+def vecteur_poignee(type_: int, vx: int | None, vy: int | None, dx: float, dy: float,
+                    libre: bool) -> tuple[int, int]:
+    """Nouveau (vx, vy) d'un garde dont la poignee est tiree en (dx, dy) : au pixel en placement
+    libre ; sinon le garde bleu prend le rayon du jeu le plus proche (`RAYONS_GARDE_BLEU`, vers la
+    droite), et les autres gardes, dont le domaine n'est pas releve, sont aimantes a `PAS_RAYON`."""
+    if libre:
+        return vecteur_rayon(vx, vy, dx, dy)
+    if type_ == GARDE_BLEU:
+        return min(RAYONS_GARDE_BLEU, key=lambda r: abs(r - dx)), 0
+    return vecteur_rayon(vx, vy, dx, dy, PAS_RAYON)
+
+
 def _entier(texte: str) -> int | None:
     texte = texte.strip()
     return int(texte) if texte else None
@@ -52,6 +79,7 @@ class Fenetre:
         self.chargeur = chargeur              # kotcm.live.chargeur.Chargeur ; None : pas de chargement live
         self.arme: int | None = None          # type choisi dans la palette, pose au prochain clic
         self._glisse = None                   # (ident, x0 ecran, y0 ecran, dernier x, dernier y)
+        self._poignee = None                  # (ident du garde, vx, vy) pendant qu'on tire la poignee de rayon
         self.libre = tk.BooleanVar(value=edition.libre)
         self._bruts_visibles = False
         self.racine.bind("<Control-z>", lambda e: self.annuler())
@@ -207,6 +235,25 @@ class Fenetre:
             if o.type not in GEMMES:
                 c.create_text((x0 + x1) / 2, (y0 + y1) / 2, text=self.tr.abrev_type(o.type),
                               fill="white", font=("TkDefaultFont", 8, "bold"), tags=(etiquette,))
+        garde = self._garde_selectionne()
+        if garde is not None:
+            self._dessiner_poignee(garde, garde.vx or 0, garde.vy or 0)
+
+    def _garde_selectionne(self):
+        if self.ed.base is None or self.ed.selection is None:
+            return None
+        o = self.ed.base.obstacle(self.ed.selection)
+        return o if o.type in GARDES else None
+
+    def _dessiner_poignee(self, garde, vx: int, vy: int) -> None:
+        """Poignee jaune du rayon : au bout du vecteur (vx, vy) du garde, reliee a lui."""
+        c = self.canevas
+        c.delete("poignee")
+        xe, ye = vers_ecran(garde.x, garde.y)
+        xp, yp = vers_ecran(garde.x + vx, garde.y + vy)
+        c.create_line(xe, ye, xp, yp, fill=COULEURS["selection"], dash=(4, 2), tags=("poignee",))
+        c.create_oval(xp - RAYON_POIGNEE, yp - RAYON_POIGNEE, xp + RAYON_POIGNEE, yp + RAYON_POIGNEE,
+                      fill=COULEURS["selection"], outline="black", tags=("poignee",))
 
     def _dessiner_zones(self) -> None:
         """Zones interdites de la porte et du totem quand un piege est selectionne."""
@@ -301,12 +348,30 @@ class Fenetre:
             self.ed.poser(numero, *vers_donjon(ev.x, ev.y))
             self.rafraichir()
             return
+        garde = self._garde_selectionne()
+        if garde is not None and "poignee" in self._etiquettes_sous(ev.x, ev.y):
+            self._poignee = (garde.ident, garde.vx or 0, garde.vy or 0)
+            self._glisse = None
+            return
         ident = self._objet_sous(ev.x, ev.y)
         self.ed.selectionner(ident)
         self.rafraichir()
         self._glisse = (ident, ev.x, ev.y, ev.x, ev.y) if ident is not None else None
 
+    def _etiquettes_sous(self, xe: float, ye: float) -> set[str]:
+        return {e for item in self.canevas.find_overlapping(xe - 2, ye - 2, xe + 2, ye + 2)
+                for e in self.canevas.gettags(item)}
+
+    def _vecteur_poignee(self, ev) -> tuple[int, int]:
+        ident, vx, vy = self._poignee
+        garde = self.ed.base.obstacle(ident)
+        x, y = vers_donjon(ev.x, ev.y)
+        return vecteur_poignee(garde.type, vx, vy, x - garde.x, y - garde.y, self.ed.libre)
+
     def _glisser(self, ev) -> None:
+        if self._poignee is not None:
+            self._dessiner_poignee(self.ed.base.obstacle(self._poignee[0]), *self._vecteur_poignee(ev))
+            return
         if self._glisse is None:
             return
         ident, x0, y0, xd, yd = self._glisse
@@ -314,6 +379,15 @@ class Fenetre:
         self._glisse = (ident, x0, y0, ev.x, ev.y)
 
     def _relache(self, ev) -> None:
+        if self._poignee is not None:
+            ident = self._poignee[0]
+            vx, vy = self._vecteur_poignee(ev)
+            self._poignee = None
+            o = self.ed.base.obstacle(ident)
+            if (vx, vy) != (o.vx or 0, o.vy or 0):
+                self.ed.modifier(ident, vx=vx, vy=vy)
+            self.rafraichir()
+            return
         if self._glisse is None:
             return
         ident, x0, y0, _, _ = self._glisse

@@ -7,7 +7,7 @@ tk = pytest.importorskip("tkinter")
 import kotcm.fenetre as module_fenetre  # noqa: E402
 from kotcm.corpus import Corpus  # noqa: E402
 from kotcm.edition import Edition  # noqa: E402
-from kotcm.fenetre import Fenetre, vers_donjon, vers_ecran  # noqa: E402
+from kotcm.fenetre import Fenetre, vecteur_poignee, vecteur_rayon, vers_donjon, vers_ecran  # noqa: E402
 from kotcm.live.chargeur import Chargeur  # noqa: E402
 from kotcm.modeles import Modeles  # noqa: E402
 from kotcm.textes import TEXTES, Traducteur  # noqa: E402
@@ -77,6 +77,52 @@ def test_le_type_de_la_porte_et_du_totem_est_fige(racine, tmp_path):
     fen.rafraichir()
     assert str(fen.choix_type["state"]) == "readonly"
     assert [v for v in fen.choix_type["values"] if v.split()[0] in ("1", "2")] == []
+
+
+def test_vecteur_rayon_reste_sur_l_axe():
+    assert vecteur_rayon(192, 0, 250, 40) == (250, 0)            # garde bleu : horizontal
+    assert vecteur_rayon(0, -256, 30, -100) == (0, -100)         # garde rouge : vertical, sens conserve
+    assert vecteur_rayon(192, 0, -50, 0) == (1, 0)               # jamais en dessous d'un pas
+    assert vecteur_rayon(192, 0, 250, 40, 32) == (256, 0)        # aimante au pas
+    assert vecteur_rayon(0, -256, 0, 5, 32) == (0, -32)
+    assert vecteur_rayon(None, None, 80, 0) == (80, 0)           # vecteur absent : horizontal
+
+
+def test_poignee_du_garde_bleu_dans_le_domaine_du_jeu():
+    # l'editeur du jeu : horizontale, vers la droite, de 192 a 448 par pas de 64 (releve du 2026-10-09)
+    assert vecteur_poignee(10, 192, 0, 100, 0, libre=False) == (192, 0)     # 128 n'existe pas dans le jeu
+    assert vecteur_poignee(10, 192, 0, 250, 40, libre=False) == (256, 0)
+    assert vecteur_poignee(10, 192, 0, 300, 0, libre=False) == (320, 0)
+    assert vecteur_poignee(10, 192, 0, 900, 0, libre=False) == (448, 0)
+    assert vecteur_poignee(10, 192, 0, -300, 0, libre=False) == (192, 0)
+    assert vecteur_poignee(10, 0, -256, 250, 0, libre=False) == (256, 0)    # toujours vers la droite
+    assert vecteur_poignee(10, 192, 0, 100, 0, libre=True) == (100, 0)      # placement libre : au pixel
+    assert vecteur_poignee(9, 0, -256, 0, -100, libre=False) == (0, -96)    # garde rouge : domaine inconnu, 32 px
+
+
+def test_tirer_la_poignee_regle_le_rayon_du_garde(racine, tmp_path):
+    ed = Edition(Corpus(), Modeles())
+    ed.nouvelle(ed.corpus.forme("commune", 69))
+    ident = ed.poser(10, 352, 96)
+    ed.selectionner(ident)
+    fen = Fenetre(racine, ed, Traducteur("fr"), preferences=tmp_path / "p.json")
+    garde = ed.base.obstacle(ident)
+    vx0 = garde.vx
+    xp, yp = vers_ecran(garde.x + vx0, garde.y)
+    assert "poignee" in fen._etiquettes_sous(xp, yp)
+
+    class Ev:
+        pass
+
+    appui, fin = Ev(), Ev()
+    appui.x, appui.y = xp, yp
+    fin.x, fin.y = vers_ecran(garde.x + 300, garde.y)          # 300 -> 320 (garde bleu : pas de 64)
+    fen._appui(appui)
+    fen._glisser(fin)
+    assert ed.base.obstacle(ident).vx == vx0                      # rien d'ecrit avant le relachement
+    fen._relache(fin)
+    assert (ed.base.obstacle(ident).vx, ed.base.obstacle(ident).vy) == (320, 0)
+    assert ed.annuler() and ed.base.obstacle(ident).vx == vx0
 
 
 def test_fenetre_sans_base(racine, tmp_path):

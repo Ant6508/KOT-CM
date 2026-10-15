@@ -38,6 +38,9 @@ GARDE_BLEU, BLOODHOUND = 10, 44
 SUPPORTS = {0: (-1, 0), 1: (0, -1), 2: (1, 0), 3: (0, 1)}
 # Carreaux en plus, depuis la base de la porte, trop pres d'elle pour un piege.
 PROCHES_PORTE = {GARDE_BLEU: ((0, 3), (1, 3))}
+# Rayon du garde bleu (vx ; vy = 0), releve dans l'editeur du jeu le 2026-10-09 : la poignee jaune
+# reste sur l'horizontale, vers la droite, de 192 a 448 par pas de 64 (tiree ailleurs, elle s'y recale).
+RAYONS_GARDE_BLEU = tuple(range(192, 449, 64))
 
 
 @dataclass(frozen=True)
