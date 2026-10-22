@@ -47,8 +47,8 @@ class FauxAppareil:
 
     def verifier_version(self):
         if not self.version_ok:
-            raise ErreurLive("live_version", trouvee="2.85 (1)", connues="2.84 (4755781)")
-        return Table.pour(4755781)
+            raise ErreurLive("live_version", trouvee="2.85 (1)", connues="2.84.1 (4755794)")
+        return Table.derniere()
 
     def preparer_serveur(self):
         self.serveur_prepare = True
@@ -88,7 +88,7 @@ def test_connexion_ouvre_et_ferme_la_session():
         assert (jeu.serial, jeu.pid) == ("s", 812) and a.serveur_prepare
         assert jeu.etat().octets == b"\x0a\x00"
     assert a.session.script.charge and a.session.script.decharge and a.session.detachee
-    assert a.session.source == charger_agent(AGENT.read_text(encoding="utf-8"), Table.pour(4755781))
+    assert a.session.source == charger_agent(AGENT.read_text(encoding="utf-8"), Table.derniere())
 
 
 def test_garde_de_version_avant_toute_attache():
@@ -136,7 +136,8 @@ def test_l_agent_lit_ses_adresses_dans_la_table():
     assert noms_utilises(source) == ["dungeon_storage", "editeur_evenement", "editeur_image",
                                      "kotcm_patch_enregistrer", "parse_from_array", "serialize_to_string",
                                      "user_profile_ptr", "vt_dungeon", "vt_dungeon_obstacle", "vt_dungeon_storage"]
-    assert "kotcm_patch_enregistrer: 0x1570c5f" in charger_agent(source, Table.pour(4755781))
+    table = Table.derniere()
+    assert "kotcm_patch_enregistrer: %#x" % table.adresse("kotcm_patch_enregistrer") in charger_agent(source, table)
     assert re.search(r"ORIGINE = \[0x0f, 0x84, 0xd2, 0x02, 0x00, 0x00\]", source)
     assert re.search(r"PATCHE = \[0xe9, 0xd3, 0x02, 0x00, 0x00, 0x90\]", source)
     assert set(re.findall(r"^  (\w+): function", source, re.M)) == {"etat", "ecrire", "patcher", "evenements"}

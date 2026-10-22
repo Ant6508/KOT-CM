@@ -15,7 +15,7 @@ then load them into the game's own editor to play them in **Try** mode.
   **Unload** puts your own base back, byte for byte.
 
 A Python port of the *Creative Mode Mod Menu* by OvovUsus (see
-[Credits](#credits)), for King of Thieves **2.84** on the **MEmu** Android
+[Credits](#credits)), for King of Thieves **2.84.1** on the **MEmu** Android
 emulator, on Windows. The editor works offline; only the loading into the
 game needs MEmu.
 
@@ -156,7 +156,7 @@ needs a 64-bit Android instance (it was tested on MEmu's Android 9, 64-bit).
 
 **Check:** after the restart, MEmu's settings still show Root mode on.
 
-### 7. King of Thieves 2.84
+### 7. King of Thieves 2.84.1
 
 1. In MEmu, open the **Play Store**, sign in with a Google account and install
    **King of Thieves**.
@@ -165,9 +165,9 @@ needs a 64-bit Android instance (it was tested on MEmu's Android 9, 64-bit).
    **Enable auto update** (the wording may vary).
 
 **Check:** in MEmu, Android *Settings* → *Apps* → *King of Thieves*: the
-version shown must be **2.84**.
+version shown must be **2.84.1**.
 
-The tool is tied to this exact version (versionCode 4755781): it writes into
+The tool is tied to this exact version (versionCode 4755794): it writes into
 the game's memory at addresses recorded on 2.84. With any other version, it
 refuses to load rather than write in the wrong place. If the Play Store
 installs a newer version, the loading won't work until those addresses have
@@ -284,7 +284,7 @@ and replace the files, keeping your `.bin` files. Either way, then run again:
 | `adb not found` | MEmu isn't installed, or installed in a way the tool doesn't recognize | Install MEmu (step 6). Otherwise, give the full path of `adb.exe`, for example `$env:KOTCM_ADB = "C:\Program Files\Microvirt\MEmu\adb.exe"` |
 | `adb failed: ...` | Wrong `--serial`, or that MEmu instance isn't started | Check the instance (see [Several MEmu instances](#several-memu-instances)) |
 | `Choose the device with --serial` | No MEmu running, or several | Launch MEmu; with several instances, see [Several MEmu instances](#several-memu-instances). If it says `(connected: -)` while MEmu is running, restart MEmu |
-| `The installed game is ...; kotcm only knows 2.84` | King of Thieves isn't on 2.84 | The tool only works with 2.84 (see [Limitations](#limitations)) |
+| `The installed game is ...; kotcm only knows 2.84.1` | King of Thieves isn't on 2.84.1 | The tool only works with 2.84.1 (see [Limitations](#limitations)) |
 | `King of Thieves is not running.` | The game is closed | Launch King of Thieves in MEmu, up to the home screen |
 | `Another frida-server is running` | Another Frida tool left its server running in MEmu | Restart MEmu, then try again |
 | `frida-server 17.19.0 is missing or not the right one, and could not be downloaded` | No internet, or GitHub unreachable | Check your connection and try again. Otherwise, follow the message: download the archive by hand, unpack it with 7-Zip, put the file where it says |
@@ -292,7 +292,7 @@ and replace the files, keeping your `.bin` files. Either way, then run again:
 | `frida-server does not start` or `Cannot attach to the game` | Root mode off, or a 32-bit Android instance | Check Root mode (step 6) and that the instance is 64-bit (in the Multi-MEmu manager), then restart MEmu |
 | `The editor is open` | The game isn't on its home screen | Back arrow in the game, without saving, then try again |
 | `The current slot changed from A to B: unload first.` | You switched preset in the game while a base was loaded | Click **Unload from the game**, then load again |
-| `Unexpected game memory (...)` | The game isn't exactly 2.84, or is still starting | Wait for the home screen and try again; otherwise check the version (step 7) |
+| `Unexpected game memory (...)` | The game isn't exactly 2.84.1, or is still starting | Wait for the home screen and try again; otherwise check the version (step 7) |
 | `The game is not drawing` | MEmu is minimized or the game is in the background | Bring the game to the foreground, then try again |
 | `“Save” is already disabled, but kotcm has no copy of your base` | kotcm's data was deleted while a base was loaded | Restart the game: it reloads your base from the server |
 | The game closes during **Try** | A trap you don't own (see [Read this before](#read-this-before-loading-a-base-into-the-game)) | Relaunch the game: your base is back. Remove that trap from the kotcm base |
@@ -300,7 +300,7 @@ and replace the files, keeping your `.bin` files. Either way, then run again:
 
 ## Limitations
 
-- **King of Thieves 2.84 only** for the loading into the game: the tool
+- **King of Thieves 2.84.1 only** for the loading into the game: the tool
   writes into the game's memory at addresses recorded on this version, and
   they have to be found again with every game update. The offline editor
   doesn't depend on the game version.

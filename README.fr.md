@@ -16,7 +16,7 @@ mode **Essayer**.
   **Essayer**, puis **Décharger** remet ta propre base, à l'octet près.
 
 Portage en Python du *Creative Mode Mod Menu* d'OvovUsus (voir
-[Crédits](#crédits)), pour King of Thieves **2.84** sur l'émulateur Android
+[Crédits](#crédits)), pour King of Thieves **2.84.1** sur l'émulateur Android
 **MEmu**, sous Windows. L'éditeur marche hors ligne ; seul le chargement dans
 le jeu demande MEmu.
 
@@ -168,7 +168,7 @@ Il lui faut une instance Android 64 bits (il a été testé sur l'Android 9,
 **Vérification :** après le redémarrage, les paramètres de MEmu montrent
 toujours le mode Root activé.
 
-### 7. King of Thieves 2.84
+### 7. King of Thieves 2.84.1
 
 1. Dans MEmu, ouvre le **Play Store**, connecte-toi avec un compte Google et
    installe **King of Thieves**.
@@ -178,9 +178,9 @@ toujours le mode Root activé.
    **Activer la mise à jour automatique** (le libellé peut varier).
 
 **Vérification :** dans MEmu, *Paramètres* Android → *Applications* → *King
-of Thieves* : la version affichée doit être **2.84**.
+of Thieves* : la version affichée doit être **2.84.1**.
 
-L'outil est lié à cette version exacte (versionCode 4755781) : il écrit dans
+L'outil est lié à cette version exacte (versionCode 4755794) : il écrit dans
 la mémoire du jeu à des adresses relevées sur la 2.84. Avec une autre
 version, il refuse de charger plutôt que d'écrire au mauvais endroit. Si le
 Play Store installe une version plus récente, le chargement ne marchera plus
@@ -302,7 +302,7 @@ les deux cas, relance ensuite :
 | `adb introuvable` | MEmu n'est pas installé, ou installé d'une façon que l'outil ne reconnaît pas | Installe MEmu (étape 6). Sinon, donne le chemin complet d'`adb.exe`, par exemple `$env:KOTCM_ADB = "C:\Program Files\Microvirt\MEmu\adb.exe"` |
 | `adb a échoué : ...` | Mauvais `--serial`, ou cette instance de MEmu n'est pas lancée | Vérifie l'instance (voir [Plusieurs instances de MEmu](#plusieurs-instances-de-memu)) |
 | `Choisis l'appareil avec --serial` | Aucun MEmu lancé, ou plusieurs | Lance MEmu ; avec plusieurs instances, voir [Plusieurs instances de MEmu](#plusieurs-instances-de-memu). S'il dit `(connectés : -)` alors que MEmu tourne, redémarre MEmu |
-| `Le jeu installé est en ... ; kotcm ne connaît que la 2.84` | King of Thieves n'est pas en 2.84 | L'outil ne marche qu'avec la 2.84 (voir [Limites](#limites)) |
+| `Le jeu installé est en ... ; kotcm ne connaît que la 2.84.1` | King of Thieves n'est pas en 2.84.1 | L'outil ne marche qu'avec la 2.84.1 (voir [Limites](#limites)) |
 | `King of Thieves ne tourne pas.` | Le jeu est fermé | Lance King of Thieves dans MEmu, jusqu'à l'accueil |
 | `Un autre frida-server tourne` | Un autre outil Frida a laissé son serveur tourner dans MEmu | Redémarre MEmu, puis recommence |
 | `frida-server 17.19.0 manque ou n'est pas le bon, et n'a pas pu être téléchargé` | Pas d'internet, ou GitHub injoignable | Vérifie ta connexion et recommence. Sinon, suis le message : télécharge l'archive à la main, décompresse-la avec 7-Zip, pose le fichier où il le dit |
@@ -310,7 +310,7 @@ les deux cas, relance ensuite :
 | `frida-server ne démarre pas` ou `Impossible de s'attacher au jeu` | Mode Root désactivé, ou instance Android 32 bits | Vérifie le mode Root (étape 6) et que l'instance est en 64 bits (dans le gestionnaire Multi-MEmu), puis redémarre MEmu |
 | `L'éditeur est ouvert` | Le jeu n'est pas sur son accueil | Flèche retour dans le jeu, sans enregistrer, puis recommence |
 | `L'emplacement courant est passé de A à B : décharge d'abord.` | Tu as changé de préréglage dans le jeu pendant un chargement | Clique **Décharger du jeu**, puis recharge |
-| `Mémoire du jeu inattendue (...)` | Le jeu n'est pas exactement en 2.84, ou démarre encore | Attends l'accueil et recommence ; sinon vérifie la version (étape 7) |
+| `Mémoire du jeu inattendue (...)` | Le jeu n'est pas exactement en 2.84.1, ou démarre encore | Attends l'accueil et recommence ; sinon vérifie la version (étape 7) |
 | `Le jeu ne dessine plus` | MEmu est réduit ou le jeu est en arrière-plan | Remets le jeu au premier plan, puis recommence |
 | `« Enregistrer » est déjà neutralisé, mais kotcm n'a pas de copie de ta base` | Les données de kotcm ont été effacées pendant un chargement | Redémarre le jeu : il recharge ta base du serveur |
 | Le jeu se ferme pendant **Essayer** | Un piège que tu ne possèdes pas (voir [À lire avant](#à-lire-avant-de-charger-une-base-dans-le-jeu)) | Relance le jeu : ta base est revenue. Retire ce piège de la base kotcm |
@@ -318,7 +318,7 @@ les deux cas, relance ensuite :
 
 ## Limites
 
-- **King of Thieves 2.84 seulement** pour le chargement dans le jeu : l'outil
+- **King of Thieves 2.84.1 seulement** pour le chargement dans le jeu : l'outil
   écrit dans la mémoire du jeu à des adresses relevées sur cette version, à
   retrouver à chaque mise à jour du jeu. L'éditeur hors ligne ne dépend pas
   de la version du jeu.

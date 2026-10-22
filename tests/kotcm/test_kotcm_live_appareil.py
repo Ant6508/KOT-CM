@@ -6,11 +6,12 @@ import subprocess
 import sys
 
 import pytest
+from kotnoyau.table import Table
 
 from kotcm.live import ErreurLive
 from kotcm.live.appareil import (ADB_STANDARD, NOM_SERVEUR, SERVEUR, SHA256_SERVEUR, URL_SERVEUR, Appareil,
                                  chemin_adb, copie_locale, dossier_memu, parse_appareils, parse_pid,
-                                 parse_serveurs, parse_version, seul_appareil)
+                                 parse_serveurs, parse_version, seul_appareil, versions_connues)
 
 EMPREINTE_ELF = hashlib.sha256(b"ELF").hexdigest()      # le faux frida-server des tests
 
@@ -99,13 +100,14 @@ def test_serial_demande_puis_android_serial_puis_seul_appareil():
 
 
 def test_garde_de_version():
-    a, _ = appareil({"shell dumpsys": "versionCode=4755781\nversionName=2.84\n"})
-    assert a.verifier_version().adresse("vt_dungeon_storage") == 0x1fb1170
+    table = Table.derniere()  # la copie publiee n'embarque que la plus recente
+    a, _ = appareil({"shell dumpsys": "versionCode=%d\nversionName=%s\n" % (table.code, table.nom)})
+    assert a.verifier_version().adresse("vt_dungeon_storage") == table.adresse("vt_dungeon_storage")
     a, _ = appareil({"shell dumpsys": "versionCode=4800000\nversionName=2.85\n"})
     with pytest.raises(ErreurLive) as e:
         a.verifier_version()
     assert (e.value.cle, e.value.valeurs) == ("live_version", {"trouvee": "2.85 (4800000)",
-                                                               "connues": "2.84 (4755781)"})
+                                                               "connues": versions_connues()})
 
 
 def test_les_lectures_viennent_du_noyau():
