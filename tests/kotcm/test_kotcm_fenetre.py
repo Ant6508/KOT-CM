@@ -97,7 +97,15 @@ def test_poignee_du_garde_bleu_dans_le_domaine_du_jeu():
     assert vecteur_poignee(10, 192, 0, -300, 0, libre=False) == (192, 0)
     assert vecteur_poignee(10, 0, -256, 250, 0, libre=False) == (256, 0)    # toujours vers la droite
     assert vecteur_poignee(10, 192, 0, 100, 0, libre=True) == (100, 0)      # placement libre : au pixel
-    assert vecteur_poignee(9, 0, -256, 0, -100, libre=False) == (0, -96)    # garde rouge : domaine inconnu, 32 px
+
+
+def test_poignee_du_garde_rouge_dans_le_domaine_du_jeu():
+    # course releve dans l'editeur du jeu le 2026-10-16 : la plus proche du point tire
+    assert vecteur_poignee(9, 0, -256, 0, -100, libre=False) == (0, -192)
+    assert vecteur_poignee(9, 576, 0, 250, 40, libre=False) == (256, 0)
+    assert vecteur_poignee(9, 576, 0, 900, 0, libre=False) == (832, 0)
+    assert vecteur_poignee(9, 576, 0, -330, 0, libre=False) == (-320, 0)
+    assert vecteur_poignee(9, 576, 0, 100, 0, libre=True) == (100, 0)
 
 
 def test_tirer_la_poignee_regle_le_rayon_du_garde(racine, tmp_path):

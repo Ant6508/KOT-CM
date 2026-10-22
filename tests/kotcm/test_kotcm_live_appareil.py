@@ -100,11 +100,21 @@ def test_serial_demande_puis_android_serial_puis_seul_appareil():
 
 def test_garde_de_version():
     a, _ = appareil({"shell dumpsys": "versionCode=4755781\nversionName=2.84\n"})
-    a.verifier_version()
+    assert a.verifier_version().adresse("vt_dungeon_storage") == 0x1fb1170
     a, _ = appareil({"shell dumpsys": "versionCode=4800000\nversionName=2.85\n"})
     with pytest.raises(ErreurLive) as e:
         a.verifier_version()
-    assert (e.value.cle, e.value.valeurs) == ("live_version", {"trouvee": "2.85 (4800000)"})
+    assert (e.value.cle, e.value.valeurs) == ("live_version", {"trouvee": "2.85 (4800000)",
+                                                               "connues": "2.84 (4755781)"})
+
+
+def test_les_lectures_viennent_du_noyau():
+    import kotnoyau.adb as noyau
+    from kotcm.live import appareil as module
+
+    for nom in ("parse_appareils", "parse_version", "parse_pid", "dossier_memu"):
+        assert getattr(module, nom) is getattr(noyau, nom)
+    assert module.PAQUET == noyau.PAQUET and module.ADB_STANDARD == noyau.ADB_STANDARD
 
 
 def test_jeu_absent():

@@ -1,7 +1,7 @@
 'use strict';
 // Agent de kotcm, phase 2 (spec, section 9) : lit et remplace un emplacement de l'editeur
-// dans DungeonStorage, pose ou retire le patch d'« Enregistrer ». libthieves.so 2.84 x86_64
-// (versionCode 4755781) seulement : la version est gardee cote Python (appareil.py), la forme
+// dans DungeonStorage, pose ou retire le patch d'« Enregistrer ». libthieves.so x86_64,
+// adresses de la table du noyau (prelude ADR) : la version est gardee cote Python (appareil.py), la forme
 // de la memoire est verifiee ici avant toute ecriture.
 //
 // Le modele n'est lu et ecrit que dans le fil du jeu, au debut d'une image (nativeDrawFrame) :
@@ -10,21 +10,21 @@
 var mod = Process.getModuleByName('libthieves.so');
 var base = mod.base;
 
-var VT_DS = base.add(0x1fb1170);           // DungeonStorage
-var VT_DONJON = base.add(0x1f961c8);       // KTProtocol::Dungeon
-var VT_OBSTACLE = base.add(0x1f96128);     // KTProtocol::Dungeon_Obstacle
-var DS = base.add(0x2184420);              // l'objet DungeonStorage (statique)
-var UP = base.add(0x2186e30);              // pointeur vers UserProfile
-var EDITEUR_IMAGE = base.add(0x15704b0);   // SelfEditorState[8] : une fois par image dans l'editeur
-var EVENEMENTS = base.add(0x1570bd0);      // SelfEditorState[2](this, evenement)
+var VT_DS = base.add(ADR.vt_dungeon_storage);         // DungeonStorage
+var VT_DONJON = base.add(ADR.vt_dungeon);             // KTProtocol::Dungeon
+var VT_OBSTACLE = base.add(ADR.vt_dungeon_obstacle);  // KTProtocol::Dungeon_Obstacle
+var DS = base.add(ADR.dungeon_storage);               // l'objet DungeonStorage (statique)
+var UP = base.add(ADR.user_profile_ptr);              // pointeur vers UserProfile
+var EDITEUR_IMAGE = base.add(ADR.editeur_image);      // SelfEditorState[8] : une fois par image dans l'editeur
+var EVENEMENTS = base.add(ADR.editeur_evenement);     // SelfEditorState[2](this, evenement)
 var IMAGE = mod.getExportByName('Java_com_zf_ZRenderer_nativeDrawFrame');
-var serialiser = new NativeFunction(base.add(0x1c3cb90), 'bool', ['pointer', 'pointer']);       // SerializeToString
-var parser = new NativeFunction(base.add(0x1c3c350), 'bool', ['pointer', 'pointer', 'int']);    // ParseFromArray
+var serialiser = new NativeFunction(base.add(ADR.serialize_to_string), 'bool', ['pointer', 'pointer']);  // SerializeToString
+var parser = new NativeFunction(base.add(ADR.parse_from_array), 'bool', ['pointer', 'pointer', 'int']);  // ParseFromArray
 
 // « Enregistrer » (evenement 100) : call 0x1582350 (controle) ; test al, al ; je 0x1570f37 (fin).
 // Le patch change ce `je` en `jmp` : le controle s'affiche encore, l'editeur ne passe jamais en
 // mode enregistrer. « Essayer » (evenement 142, son propre `je` en 0x1570cf0) n'est pas touche.
-var PATCH = base.add(0x1570c5f);
+var PATCH = base.add(ADR.kotcm_patch_enregistrer);    // SelfEditorState[2] + 0x8f (table du noyau)
 var ORIGINE = [0x0f, 0x84, 0xd2, 0x02, 0x00, 0x00];   // je  0x1570f37
 var PATCHE = [0xe9, 0xd3, 0x02, 0x00, 0x00, 0x90];    // jmp 0x1570f37 ; nop
 

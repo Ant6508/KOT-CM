@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """La connexion au jeu le temps d'une operation : `with Connexion(Appareil()) as jeu: ...`.
 
-A l'entree : garde de version, frida-server 17.19.0, attache par pid, agent
+A l'entree : garde de version (table du noyau), frida-server 17.19.0, attache par pid, agent
 charge. A la sortie, l'agent est decharge et la session fermee : une seule
 session ouverte, et seulement le temps de l'operation (spec, 9.3). Le patch
 d'« Enregistrer » survit a la fermeture (agent.js).
@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from kotcm.live import ErreurLive
+from kotnoyau.frida_ import charger_agent
 
 AGENT = Path(__file__).with_name("agent.js")
 
@@ -45,12 +46,12 @@ class Connexion:
 
     def __enter__(self) -> "Connexion":
         a = self.appareil
-        a.verifier_version()
+        table = a.verifier_version()
         a.preparer_serveur()
         self.serial, self.pid = a.serial, a.pid_jeu()
         try:
             self._session = a.attacher(self.pid)
-            self._script = self._session.create_script(AGENT.read_text(encoding="utf-8"))
+            self._script = self._session.create_script(charger_agent(AGENT.read_text(encoding="utf-8"), table))
             self._script.load()
         except ErreurLive:
             self.__exit__(None, None, None)

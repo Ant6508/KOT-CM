@@ -17,7 +17,8 @@ from kotcm.catalogue import GARDES, GEMMES, PORTE, TOTEM, TYPES, posables, type_
 from kotcm.edition import Edition, ErreurLecture
 from kotcm.live import ErreurLive
 from kotcm.protobuf import HAUTEUR, LARGEUR
-from kotcm.regles import GARDE_BLEU, RAYONS_GARDE_BLEU, base_2x2, zone_porte, zone_totem
+from kotcm.regles import (COURSES_GARDE_ROUGE, GARDE_BLEU, GARDE_ROUGE, RAYONS_GARDE_BLEU, base_2x2,
+                          zone_porte, zone_totem)
 from kotcm.textes import LANGUES, PREFERENCES, Traducteur, sauver_langue
 
 ECHELLE = 0.8               # pixels ecran par pixel du donjon
@@ -59,11 +60,14 @@ def vecteur_poignee(type_: int, vx: int | None, vy: int | None, dx: float, dy: f
                     libre: bool) -> tuple[int, int]:
     """Nouveau (vx, vy) d'un garde dont la poignee est tiree en (dx, dy) : au pixel en placement
     libre ; sinon le garde bleu prend le rayon du jeu le plus proche (`RAYONS_GARDE_BLEU`, vers la
-    droite), et les autres gardes, dont le domaine n'est pas releve, sont aimantes a `PAS_RAYON`."""
+    droite), le garde rouge la course du jeu la plus proche (`COURSES_GARDE_ROUGE`) ; tout autre
+    garde (aucun aujourd'hui) serait aimante a `PAS_RAYON`."""
     if libre:
         return vecteur_rayon(vx, vy, dx, dy)
     if type_ == GARDE_BLEU:
         return min(RAYONS_GARDE_BLEU, key=lambda r: abs(r - dx)), 0
+    if type_ == GARDE_ROUGE:
+        return min(COURSES_GARDE_ROUGE, key=lambda v: (v[0] - dx) ** 2 + (v[1] - dy) ** 2)
     return vecteur_rayon(vx, vy, dx, dy, PAS_RAYON)
 
 

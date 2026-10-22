@@ -13,14 +13,18 @@ Codes (un par objet, dans cet ordre de priorite) :
                          du cote de son orientation n'est un bloc, ou son
                          orientation n'est pas de 0 a 3 ;
   2 trop pres de porte   carreau dans les 2 x 2 de la porte elargis d'un carreau,
-                         ou (garde bleu) dans ses carreaux en plus ;
-  1 sur le totem         carreau dans les 2 x 2 du totem ;
+                         ou (garde bleu) dans ses carreaux en plus ; zone etendue d'un carreau
+                         a droite et en bas pour l'anti-gravite ;
+  1 sur le totem         carreau dans les 2 x 2 du totem (etendus de meme pour l'anti-gravite) ;
+  4 sur un bloc         porte, totem, ou emprise d'un piege (anti-gravite, depuis son carreau
+                         moins (1, 1)) : un de ses carreaux
+                         est un bloc ou sort du cadre (pour un piege, controle apres un code 0) ;
   0 valide.
 Porte et totem : 4 si un de leurs 2 x 2 carreaux est un bloc ou sort du cadre.
 
 Types dont les regles propres sont connues : porte, totem, scie, garde bleu,
-bloodhound (verdict "verifie"). Pour les autres, seules les regles communes
-(codes 2 sans liste propre, et 1) sont appliquees : verdict "non verifie".
+bloodhound, anti-gravite, garde rouge, oiseau chercheur, canon (verdict "verifie"). Pour les autres,
+seules les regles communes (codes 2 sans liste propre, et 1) sont appliquees : verdict "non verifie".
 Les gemmes (17, 18) n'ont pas de verdict.
 """
 
@@ -41,6 +45,17 @@ PROCHES_PORTE = {GARDE_BLEU: ((0, 3), (1, 3))}
 # Rayon du garde bleu (vx ; vy = 0), releve dans l'editeur du jeu le 2026-10-09 : la poignee jaune
 # reste sur l'horizontale, vers la droite, de 192 a 448 par pas de 64 (tiree ailleurs, elle s'y recale).
 RAYONS_GARDE_BLEU = tuple(range(192, 449, 64))
+ANTIGRAVITE, GARDE_ROUGE = 7, 9
+# Types dont l'octet +0x194 est nul (anti-gravite) : les zones de la porte et du totem s'etendent
+# d'un carreau a droite et en bas (calcul editeur_calcul_codes du jeu).
+ETENDUES = {ANTIGRAVITE: 1}
+# Emprise : carreaux, depuis son carreau moins (1, 1), ni bloc ni hors du cadre (controle a l'enregistrement, code 4).
+EMPRISES = {ANTIGRAVITE: ((0, 0), (0, 1), (1, 0), (1, 1))}
+# Course du garde rouge (vx, vy), releve dans l'editeur du jeu le 2026-10-16 (kot_headless,
+# controller/placements.COURSES) : horizontale (192 a 832) ou verticale (192 a 448), dans les deux sens.
+# La poignee s'aimante a la course la plus proche sans regarder le cadre (regle course_hors_cadre hors perimetre).
+COURSES_GARDE_ROUGE = (tuple((s * n, 0) for s in (1, -1) for n in range(192, 833, 64))
+                       + tuple((0, s * n) for s in (1, -1) for n in range(192, 449, 64)))
 
 
 @dataclass(frozen=True)
@@ -70,19 +85,21 @@ def plein(grille: int, c: int, r: int) -> bool:
     return bool(grille >> ((r // 2) * LARGEUR + c // 2) & 1)
 
 
-def zone_porte(porte: Obstacle) -> tuple[int, int, int, int]:
-    """(colonne, rangee, largeur, hauteur) en carreaux des 4 x 4 carreaux interdits autour de la porte."""
+def zone_porte(porte: Obstacle, etendue: int = 0) -> tuple[int, int, int, int]:
+    """(colonne, rangee, largeur, hauteur) en carreaux des 4 x 4 carreaux interdits autour de la porte,
+    plus `etendue` carreau a droite et en bas."""
     pc, pr = base_2x2(porte)
-    return pc - 1, pr - 1, 4, 4
+    return pc - 1, pr - 1, 4 + etendue, 4 + etendue
 
 
-def zone_totem(totem: Obstacle) -> tuple[int, int, int, int]:
+def zone_totem(totem: Obstacle, etendue: int = 0) -> tuple[int, int, int, int]:
     tc, tr = base_2x2(totem)
-    return tc, tr, 2, 2
+    return tc, tr, 2 + etendue, 2 + etendue
 
 
 def _code_piege(o: Obstacle, grille: int, porte: Obstacle | None, totem: Obstacle | None) -> int:
     c, r = carreau(o)
+    bc, br = base_2x2(o)
     if o.type == BLOODHOUND:
         if (o.orientation or 0) not in SUPPORTS:
             return 3
@@ -90,16 +107,18 @@ def _code_piege(o: Obstacle, grille: int, porte: Obstacle | None, totem: Obstacl
         if not (plein(grille, c, r) or plein(grille, c + dc, r + dr)):
             return 3
     if porte is not None:
-        zc, zr, zl, zh = zone_porte(porte)
+        zc, zr, zl, zh = zone_porte(porte, ETENDUES.get(o.type, 0))
         if zc <= c < zc + zl and zr <= r < zr + zh:
             return 2
         pc, pr = base_2x2(porte)
         if any((c, r) == (pc + dc, pr + dr) for dc, dr in PROCHES_PORTE.get(o.type, ())):
             return 2
     if totem is not None:
-        zc, zr, zl, zh = zone_totem(totem)
+        zc, zr, zl, zh = zone_totem(totem, ETENDUES.get(o.type, 0))
         if zc <= c < zc + zl and zr <= r < zr + zh:
             return 1
+    if any(plein(grille, bc + dc, br + dr) for dc, dr in EMPRISES.get(o.type, ())):
+        return 4
     return 0
 
 

@@ -28,16 +28,16 @@ TYPES = {t.numero: t for t in (
     Type(1, "#2e7d32", posable=False, regles_connues=True, case=True),   # porte
     Type(2, "#c9a400", posable=False, regles_connues=True, case=True),   # totem
     Type(3, "#8a6a3c"),                                                  # bloc
-    Type(4, "#455a64"),                                                  # canon
+    Type(4, "#455a64", regles_connues=True),                             # canon
     Type(6, "#263238"),                                                  # canon chercheur
-    Type(7, "#00838f"),                                                  # anti-gravite
+    Type(7, "#00838f", regles_connues=True),                             # anti-gravite
     Type(8, "#c62828", regles_connues=True),                             # scie
-    Type(9, "#b71c1c"),                                                  # garde rouge
+    Type(9, "#b71c1c", regles_connues=True),                             # garde rouge
     Type(10, "#1565c0", regles_connues=True),                            # garde bleu
     Type(11, "#6d4c41"),                                                 # plateforme
     Type(12, "#ef6c00"),                                                 # trampoline
     Type(13, "#8d6e63"),                                                 # plateforme cassable
-    Type(14, "#5e35b1"),                                                 # oiseau chercheur
+    Type(14, "#5e35b1", regles_connues=True),                            # oiseau chercheur
     Type(17, "#f9a825", posable=False),                                  # gemme
     Type(18, "#fbc02d", posable=False),                                  # gemme
     Type(21, "#00695c"),                                                 # ricochet

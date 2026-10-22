@@ -1,0 +1,372 @@
+# Table d'adresses de libthieves.so, King of Thieves 2.84 (versionCode 4755781).
+# Fait foi pour le code (spec 2026-10-21-noyau-design.md, section 3). Verifiee par
+# python -m kotnoyau.verifier sur kot_headless/apk/libthieves.so.
+
+[version]
+code = 4755781
+nom = "2.84"
+
+[adresses.vt_hero]
+offset = 0x1f466f0
+sorte = "vtable"
+cle = "Hero"
+fiche = "jeu/heros.md"
+
+[adresses.vt_hero_body]
+offset = 0x1f5b3e0
+sorte = "vtable"
+cle = "HeroBody"
+fiche = "jeu/heros.md"
+
+[adresses.vt_finish_body]
+offset = 0x1f5a9e0
+sorte = "vtable"
+cle = "FinishBody"
+fiche = "jeu/pieges.md"
+
+[adresses.vt_rect_obstacle_body]
+offset = 0x1f5a818
+sorte = "vtable"
+cle = "RectObstacleBody"
+fiche = "jeu/pieges.md"
+
+[adresses.vt_round_obstacle_body]
+offset = 0x1f5aac0
+sorte = "vtable"
+cle = "RoundObstacleBody"
+fiche = "jeu/pieges.md"
+
+[adresses.vt_chainsaw_body]
+offset = 0x1f5ad68
+sorte = "vtable"
+cle = "ChainSawBody"
+fiche = "jeu/pieges.md"
+
+[adresses.vt_chainsaw_preview]
+offset = 0x1f52ae8
+sorte = "vtable"
+cle = "ChainSawPreview"
+fiche = "jeu/editeur.md"
+
+[adresses.vt_rotating_preview]
+offset = 0x1f53f88
+sorte = "vtable"
+cle = "RotatingPreview"
+fiche = "jeu/editeur.md"
+
+[adresses.vt_round_preview]
+offset = 0x1f547c8
+sorte = "vtable"
+cle = "RoundPreview"
+fiche = "jeu/editeur.md"
+
+[adresses.vt_gravity_trigger_preview]
+offset = 0x1f58500
+sorte = "vtable"
+cle = "GravityTriggerPreview"
+fiche = "jeu/editeur.md"
+
+[adresses.vt_gun_preview]
+offset = 0x1f59160
+sorte = "vtable"
+cle = "GunPreview"
+fiche = "jeu/editeur.md"
+
+[adresses.vt_bird_preview]
+offset = 0x1f59580
+sorte = "vtable"
+cle = "BirdPreview"
+fiche = "jeu/editeur.md"
+
+[adresses.vt_moving_preview]
+offset = 0x1f599a0
+sorte = "vtable"
+cle = "MovingPreview"
+fiche = "jeu/editeur.md"
+
+[adresses.vt_dungeon_obstacle]
+offset = 0x1f96128
+sorte = "vtable"
+cle = "KTProtocol::Dungeon_Obstacle"
+fiche = "jeu/donjon.md"
+
+[adresses.vt_dungeon]
+offset = 0x1f961c8
+sorte = "vtable"
+cle = "KTProtocol::Dungeon"
+fiche = "jeu/donjon.md"
+
+[adresses.vt_bundle]
+offset = 0x1faf898
+sorte = "vtable"
+cle = "KTProtocol::ReplayValidationBundle"
+fiche = "jeu/rejeu.md"
+
+[adresses.vt_resultat]
+offset = 0x1faf938
+sorte = "vtable"
+cle = "KTProtocol::ReplayValidationResult"
+fiche = "jeu/rejeu.md"
+
+[adresses.vt_dungeon_storage]
+offset = 0x1fb1170
+sorte = "vtable"
+cle = "DungeonStorage"
+fiche = "jeu/donjon.md"
+
+[adresses.vt_self_editor_state]
+offset = 0x2012e58
+sorte = "vtable"
+cle = "SelfEditorState"
+fiche = "jeu/editeur.md"
+
+[adresses.canon_amorce]
+offset = 0xe9f840
+sorte = "slot"
+cle = "GunBody[14]"
+fiche = "jeu/pieges.md"
+
+[adresses.canon_tir]
+offset = 0xe9f910
+sorte = "slot"
+cle = "GunBody[23]"
+fiche = "jeu/pieges.md"
+
+[adresses.balle_impact]
+offset = 0xea2540
+sorte = "slot"
+cle = "GunBulletBody[3]"
+fiche = "jeu/pieges.md"
+
+[adresses.heros_contacts]
+offset = 0xea7140
+sorte = "slot"
+cle = "HeroBody[3]"
+fiche = "jeu/heros.md"
+
+[adresses.dungeon_serialiser]
+offset = 0x106a920
+sorte = "slot"
+cle = "KTProtocol::Dungeon[13]"
+fiche = "jeu/donjon.md"
+
+[adresses.replay_serialiser]
+offset = 0x12545c0
+sorte = "slot"
+cle = "KTProtocol::Replay[13]"
+fiche = "jeu/rejeu.md"
+
+[adresses.bundle_detruire]
+offset = 0x1275c30
+sorte = "slot"
+cle = "KTProtocol::ReplayValidationBundle[1]"
+fiche = "jeu/rejeu.md"
+
+[adresses.bundle_nouveau]
+offset = 0x1277610
+sorte = "slot"
+cle = "KTProtocol::ReplayValidationBundle[3]"
+fiche = "jeu/rejeu.md"
+
+[adresses.editeur_image]
+offset = 0x15704b0
+sorte = "slot"
+cle = "SelfEditorState[8]"
+fiche = "jeu/editeur.md"
+
+[adresses.editeur_evenement]
+offset = 0x1570bd0
+sorte = "slot"
+cle = "SelfEditorState[2]"
+fiche = "jeu/editeur.md"
+
+[adresses.kotcm_patch_enregistrer]
+offset = 0x1570c5f
+sorte = "slot"
+cle = "SelfEditorState[2]"
+decalage = 0x8f
+octets = "0f84d2020000"
+fiche = "chantiers/kotcm.md"
+
+[adresses.parse_from_array]
+offset = 0x1c3c350
+sorte = "export"
+cle = "_ZN6google8protobuf11MessageLite14ParseFromArrayEPKvi"
+fiche = "jeu/rejeu.md"
+
+[adresses.serialize_to_string]
+offset = 0x1c3cb90
+sorte = "export"
+cle = "_ZNK6google8protobuf11MessageLite17SerializeToStringEPNSt6__ndk112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE"
+fiche = "jeu/rejeu.md"
+
+[adresses.camera_set_position]
+offset = 0x1d11180
+sorte = "export"
+cle = "_ZN3ZF38Camera2D11setPositionERKN3glm5tvec2IfLNS1_9precisionE0EEE"
+fiche = "jeu/ecran.md"
+
+[adresses.base_element_get_pos]
+offset = 0x1d9d0f0
+sorte = "export"
+cle = "_ZNK11BaseElement6getPosEv"
+fiche = "jeu/heros.md"
+
+[adresses.horloge_site_steady]
+offset = 0x1ea9796
+sorte = "export"
+cle = "_ZNSt6__ndk16chrono12steady_clock3nowEv"
+decalage = 0x16
+octets = "85c07512486945f0"
+fiche = "jeu/horloge.md"
+
+[adresses.cout_ecrire]
+offset = 0xe2edb0
+sorte = "manuel"
+octets = "554889e54157415641554154534883ec"
+fiche = "jeu/rejeu.md"
+
+[adresses.getter_appel_trainee]
+offset = 0xe5c872
+sorte = "manuel"
+octets = "ff90680200004c89f7e8d0dffcff488b"
+fiche = "jeu/heros.md"
+
+[adresses.piege_niveau]
+offset = 0x1291ea0
+sorte = "manuel"
+octets = "554889e5415653488b87b00000004885"
+fiche = "jeu/rejeu.md"
+
+[adresses.piege_drapeau]
+offset = 0x1291f50
+sorte = "manuel"
+octets = "554889e55350488b87b00000004885c0"
+fiche = "jeu/rejeu.md"
+
+[adresses.replay_manager_tick]
+offset = 0x12c3070
+sorte = "manuel"
+octets = "80bf0001000000740c4881c710010000"
+fiche = "jeu/rejeu.md"
+
+[adresses.editeur_bloc]
+offset = 0x1395a00
+sorte = "manuel"
+octets = "b00189d109f17831488d0d5dab49ff39"
+fiche = "jeu/editeur.md"
+
+[adresses.victoire_chemin]
+offset = 0x156a320
+sorte = "manuel"
+octets = "554889e54157415641554154534881ec"
+fiche = "jeu/rejeu.md"
+
+[adresses.editeur_calcul_codes]
+offset = 0x1581c30
+sorte = "manuel"
+octets = "554889e54157415641554154534881ec"
+fiche = "jeu/editeur.md"
+
+[adresses.hero_manager_image]
+offset = 0x172f910
+sorte = "manuel"
+octets = "488b7f104885ff0f8543250000c3cccc"
+fiche = "jeu/rejeu.md"
+
+[adresses.boucle_rejeu]
+offset = 0x1730200
+sorte = "manuel"
+octets = "554889e54157415641554154534881ec"
+fiche = "jeu/rejeu.md"
+
+[adresses.replay_checker]
+offset = 0x1730620
+sorte = "manuel"
+octets = "554889e5415741564154534881ec9000"
+fiche = "jeu/rejeu.md"
+
+[adresses.script_toucher]
+offset = 0x1732a70
+sorte = "manuel"
+octets = "554889e54157415641554154534883ec"
+fiche = "jeu/rejeu.md"
+
+[adresses.script_relance]
+offset = 0x1732b80
+sorte = "manuel"
+octets = "554889e54157415641554154534883ec"
+fiche = "jeu/rejeu.md"
+
+[adresses.script_depart]
+offset = 0x1732d90
+sorte = "manuel"
+octets = "488b4750483b47587415c70700000000"
+fiche = "jeu/rejeu.md"
+
+[adresses.script_image]
+offset = 0x1732dc0
+sorte = "manuel"
+octets = "554889e54157415653508b770483feff"
+fiche = "jeu/rejeu.md"
+
+[adresses.replay_simulation_ctor]
+offset = 0x1738fb0
+sorte = "manuel"
+octets = "554889e54157415653504989f74889fb"
+fiche = "jeu/rejeu.md"
+
+[adresses.replay_simulation_run]
+offset = 0x1739ba0
+sorte = "manuel"
+octets = "554889e54157415641554154534883ec"
+fiche = "jeu/rejeu.md"
+
+[adresses.table_type_vers_enum]
+offset = 0x216e078
+sorte = "manuel"
+section = ".bss"
+fiche = "jeu/rejeu.md"
+
+[adresses.fiche_adverse_singleton]
+offset = 0x2183fe0
+sorte = "manuel"
+section = ".bss"
+fiche = "jeu/donjon.md"
+
+[adresses.fiche_adverse]
+offset = 0x2184028
+sorte = "manuel"
+section = ".bss"
+fiche = "jeu/donjon.md"
+
+[adresses.fiche_adverse_garde]
+offset = 0x21840d0
+sorte = "manuel"
+section = ".bss"
+fiche = "jeu/donjon.md"
+
+[adresses.dungeon_storage]
+offset = 0x2184420
+sorte = "manuel"
+section = ".bss"
+fiche = "jeu/donjon.md"
+
+[adresses.config_singleton]
+offset = 0x2185730
+sorte = "manuel"
+section = ".bss"
+fiche = "jeu/rejeu.md"
+
+[adresses.config_garde]
+offset = 0x2186d20
+sorte = "manuel"
+section = ".bss"
+fiche = "jeu/rejeu.md"
+
+[adresses.user_profile_ptr]
+offset = 0x2186e30
+sorte = "manuel"
+section = ".bss"
+fiche = "jeu/rejeu.md"
+

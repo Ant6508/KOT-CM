@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """adb, frida-server et attache au jeu, pour le chargement live.
 
-Recopie et adapte de `controller/device.py` (kot_headless) et de
-`controller/device.py` (kot_reverse) : kotcm n'importe rien de `controller/`.
-Aucun chemin ni serial de l'operateur : adb est pris dans KOTCM_ADB, puis dans
-le SDK de ANDROID_SDK_ROOT ou ANDROID_HOME, puis dans le PATH, puis aux
-emplacements standard du SDK Android, puis dans le dossier de MEmu (lu dans le
-registre, comme le TAS) ; l'appareil dans --serial, puis ANDROID_SERIAL, puis
-le seul appareil connecte.
+Les lectures adb (chemin d'adb, appareils, version, pid) viennent du noyau
+commun (`kotnoyau.adb`) ; kotcm garde ici ses erreurs (`ErreurLive`, cles de
+`textes.py`), son choix d'appareil (--serial, puis ANDROID_SERIAL, puis le seul
+connecte) et son frida-server. Aucun chemin ni serial de l'operateur : adb est
+pris dans KOT_ADB ou KOTCM_ADB, puis dans le SDK, le PATH, les emplacements
+standard, enfin le dossier de MEmu (kotnoyau.adb.chemin_adb). La version du jeu
+doit avoir une table d'adresses dans le noyau.
 
 frida : kotcm utilise frida 17.19.0 et son serveur
 `/data/local/tmp/frida-server-17.19.0` (spec, 9.2 bis et 9.3). Il le pousse
@@ -23,7 +23,6 @@ import hashlib
 import http.client
 import lzma
 import os
-import re
 import shutil
 import subprocess
 import time
@@ -31,9 +30,12 @@ import urllib.request
 from pathlib import Path
 
 from kotcm.live import ErreurLive, dossier_donnees
+from kotnoyau import adb as noyau_adb
+# Repris du noyau ; ADB_STANDARD, CLE_MEMU et parse_pid restent importables d'ici (tests, chargeur).
+from kotnoyau.adb import (ADB_STANDARD, CLE_MEMU, PAQUET, ErreurAdb, dossier_memu,  # noqa: F401
+                          parse_appareils, parse_pid, parse_version)
+from kotnoyau.table import Table, VersionInconnue, disponibles
 
-PAQUET = "com.zeptolab.thieves.google"
-VERSION = ("2.84", 4755781)
 FRIDA = "17.19.0"
 SERVEUR = "/data/local/tmp/frida-server-" + FRIDA
 NOM_SERVEUR = "frida-server-%s-android-x86_64" % FRIDA
@@ -42,81 +44,24 @@ URL_SERVEUR = "https://github.com/frida/frida/releases/download/%s/%s.xz" % (FRI
 # l'appareil, qui ne la porte pas (fichier mal choisi, abime) est remplacee au lieu de bloquer.
 # A changer avec FRIDA : sinon tout telechargement serait refuse.
 SHA256_SERVEUR = "e6f7e35901db8e83d40088d51692afa77bd23c8ae69e521c3e5955f741a7b9d6"
-ADB_STANDARD = (
-    os.path.join(os.environ.get("LOCALAPPDATA", ""), "Android", "Sdk", "platform-tools", "adb.exe"),
-    r"C:\Program Files (x86)\Android\android-sdk\platform-tools\adb.exe",
-)
-# L'installeur de MEmu inscrit ici son dossier (InstallLocation, par exemple
-# C:\Program Files\Microvirt) ; adb.exe est dans le sous-dossier MEmu.
-CLE_MEMU = r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MEmu"
-
-
-def dossier_memu() -> str | None:
-    """Le dossier d'installation de MEmu lu dans le registre, ou None (winreg n'existe que sous Windows)."""
-    try:
-        import winreg
-    except ImportError:
-        return None
-    try:
-        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, CLE_MEMU) as cle:
-            valeur, _ = winreg.QueryValueEx(cle, "InstallLocation")
-    except OSError:
-        return None
-    return valeur or None
 
 
 def chemin_adb(environ=os.environ, which=shutil.which, existe=os.path.isfile, memu=dossier_memu) -> str:
-    """L'adb choisi par l'utilisateur, sinon celui du SDK, sinon celui de MEmu.
-
-    Le SDK passe avant MEmu : quand deux adb de versions differentes parlent au
-    meme serveur adb, chacun le redemarre et coupe les connexions des autres.
-    """
-    if environ.get("KOTCM_ADB"):
-        return environ["KOTCM_ADB"]
-    for variable in ("ANDROID_SDK_ROOT", "ANDROID_HOME"):
-        if environ.get(variable):
-            candidat = os.path.join(environ[variable], "platform-tools", "adb.exe")
-            if existe(candidat):
-                return candidat
-    trouve = which("adb")
-    if trouve:
-        return trouve
-    for chemin in ADB_STANDARD:
-        if existe(chemin):
-            return chemin
-    dossier = memu()
-    if dossier:
-        candidat = os.path.join(dossier, "MEmu", "adb.exe")
-        if existe(candidat):
-            return candidat
-    raise ErreurLive("live_adb_absent")
+    """L'adb choisi par l'utilisateur, sinon celui du SDK, sinon celui de MEmu (kotnoyau.adb.chemin_adb)."""
+    try:
+        return noyau_adb.chemin_adb(environ, which, existe, memu)
+    except ErreurAdb as e:
+        raise ErreurLive("live_adb_absent") from e
 
 
-def parse_appareils(sortie: str) -> list[str]:
-    """Les serials en etat `device` dans la sortie de `adb devices`."""
-    serials = []
-    for ligne in sortie.splitlines()[1:]:
-        champs = ligne.split()
-        if len(champs) >= 2 and champs[1] == "device":
-            serials.append(champs[0])
-    return serials
+def versions_connues() -> str:
+    return ", ".join("%s (%d)" % (t.nom, t.code) for t in (Table.pour(c) for c in disponibles()))
 
 
 def seul_appareil(appareils: list[str]) -> str:
     if len(appareils) == 1:
         return appareils[0]
     raise ErreurLive("live_appareil", appareils=", ".join(appareils) or "-")
-
-
-def parse_version(dumpsys: str) -> tuple[str, int] | None:
-    nom = re.search(r"\bversionName=(\S+)", dumpsys)
-    code = re.search(r"\bversionCode=(\d+)", dumpsys)
-    return (nom.group(1), int(code.group(1))) if nom and code else None
-
-
-def parse_pid(sortie: str) -> int | None:
-    champs = sortie.split()
-    return int(champs[0]) if champs and champs[0].isdigit() else None
 
 
 def parse_serveurs(sortie: str) -> tuple[bool, list[str]]:
@@ -209,10 +154,15 @@ class Appareil:
     def shell(self, commande: str) -> str:
         return self._lancer(["shell", commande])
 
-    def verifier_version(self) -> None:
+    def verifier_version(self) -> Table:
+        """La table d'adresses du jeu installe ; refus (live_version) d'une version sans table."""
         v = parse_version(self.shell("dumpsys package " + PAQUET))
-        if v != VERSION:
-            raise ErreurLive("live_version", trouvee=("%s (%d)" % v) if v else "?")
+        if v is not None:
+            try:
+                return Table.pour(v[1], v[0])
+            except VersionInconnue:
+                pass
+        raise ErreurLive("live_version", trouvee=("%s (%d)" % v) if v else "?", connues=versions_connues())
 
     def pid_jeu(self) -> int:
         pid = parse_pid(self.shell("pidof " + PAQUET))

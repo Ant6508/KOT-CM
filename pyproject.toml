@@ -20,7 +20,7 @@ dev = ["pytest>=8.0"]
 packages = ["kotcm", "kotcm.live"]
 
 [tool.setuptools.package-data]
-kotcm = ["*.json"]
+kotcm = ["*.json", "_noyau/kotnoyau/*.py", "_noyau/kotnoyau/tables/*.toml"]
 "kotcm.live" = ["*.js"]
 
 [tool.pytest.ini_options]
